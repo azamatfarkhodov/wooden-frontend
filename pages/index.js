@@ -111,17 +111,6 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
                   </Col>
                 ))}
             </CardDeck>
-            <div className={styles.pagination}>
-              <Pagination
-                itemClass="page-item"
-                linkClass="page-link"
-                activePage={activePage}
-                itemsCountPerPage={4}
-                totalItemsCount={bedrooms.length}
-                pageRangeDisplayed={5}
-                onChange={handlePageChange}
-              />
-            </div>
           </Col>
         </Row>
       </Container>
@@ -180,17 +169,6 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
                   </Col>
                 ))}
             </CardDeck>
-            <div className={styles.pagination}>
-              <Pagination
-                itemClass="page-item"
-                linkClass="page-link"
-                activePage={activePage}
-                itemsCountPerPage={4}
-                totalItemsCount={kitchens.length}
-                pageRangeDisplayed={5}
-                onChange={handlePageChange}
-              />
-            </div>
           </Col>
         </Row>
       </Container>
@@ -249,17 +227,6 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
                   </Col>
                 ))}
             </CardDeck>
-            <div className={styles.pagination}>
-              <Pagination
-                itemClass="page-item"
-                linkClass="page-link"
-                activePage={activePage}
-                itemsCountPerPage={4}
-                totalItemsCount={childrooms.length}
-                pageRangeDisplayed={5}
-                onChange={handlePageChange}
-              />
-            </div>
           </Col>
         </Row>
       </Container>
@@ -324,7 +291,7 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
                 linkClass="page-link"
                 activePage={activePage}
                 itemsCountPerPage={4}
-                totalItemsCount={offices.length}
+                totalItemsCount={bedrooms.length}
                 pageRangeDisplayed={5}
                 onChange={handlePageChange}
               />
