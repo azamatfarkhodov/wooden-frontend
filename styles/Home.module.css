@@ -56,12 +56,6 @@
 		margin-bottom: 30px;
 		margin-top: 30px;
 	}
-	.pagination {
-		display: flex;
-		text-align: center;
-		align-items: center;
-		justify-content: center;
-	}
 }
 
 .footer {

@@ -1,30 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import UAParser from "ua-parser-js";
 import styles from "../styles/Home.module.css";
+import Carousel from "react-multi-carousel";
 import {
   Container,
   Row,
   Col,
   CardDeck,
   Card,
-  Image,
-  Jumbotron,
+  Image
 } from "react-bootstrap";
 import axios from "axios";
-import Pagination from "react-js-pagination";
 
-export default function Home({ bedrooms, kitchens, childrooms, offices }) {
-  const productsPerPage = 4;
-  const [activePage, setCurrentPage] = useState(1);
+const responsive = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+    paritialVisibilityGutter: 60
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+    paritialVisibilityGutter: 50
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    paritialVisibilityGutter: 30
+  }
+};
 
-  const indexOfLastProduct = activePage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
+export default function Home({ bedrooms, kitchens, childrooms, offices, deviceType }) {
   return (
     <>
       <Head>
@@ -62,8 +70,14 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
           <Col className={styles.title}>
             <h1>Для Спальни</h1>
             <CardDeck>
+            <Carousel
+              ssr
+              partialVisbile
+              deviceType={deviceType}
+              itemClass="image-item"
+              responsive={responsive}
+              >
               {bedrooms
-                .slice(indexOfFirstProduct, indexOfLastProduct)
                 .map((product) => (
                   <Col
                     sm={12}
@@ -110,6 +124,7 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
                     </Card>
                   </Col>
                 ))}
+              </Carousel>
             </CardDeck>
           </Col>
         </Row>
@@ -120,8 +135,14 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
           <Col className={styles.title}>
             <h1>Для Кухни</h1>
             <CardDeck>
+            <Carousel
+              ssr
+              partialVisbile
+              deviceType={deviceType}
+              itemClass="image-item"
+              responsive={responsive}
+              >
               {kitchens
-                .slice(indexOfFirstProduct, indexOfLastProduct)
                 .map((product) => (
                   <Col
                     sm={12}
@@ -168,6 +189,7 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
                     </Card>
                   </Col>
                 ))}
+              </Carousel>
             </CardDeck>
           </Col>
         </Row>
@@ -178,8 +200,14 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
           <Col className={styles.title}>
             <h1>Для Детской</h1>
             <CardDeck>
+            <Carousel
+              ssr
+              partialVisbile
+              deviceType={deviceType}
+              itemClass="image-item"
+              responsive={responsive}
+              >
               {childrooms
-                .slice(indexOfFirstProduct, indexOfLastProduct)
                 .map((product) => (
                   <Col
                     sm={12}
@@ -226,6 +254,7 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
                     </Card>
                   </Col>
                 ))}
+                </Carousel>
             </CardDeck>
           </Col>
         </Row>
@@ -236,8 +265,14 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
           <Col className={styles.title}>
             <h1>Для Офиса</h1>
             <CardDeck>
+            <Carousel
+              ssr
+              partialVisbile
+              deviceType={deviceType}
+              itemClass="image-item"
+              responsive={responsive}
+              >
               {offices
-                .slice(indexOfFirstProduct, indexOfLastProduct)
                 .map((product) => (
                   <Col
                     sm={12}
@@ -284,18 +319,8 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
                     </Card>
                   </Col>
                 ))}
+                </Carousel>
             </CardDeck>
-            <div className={styles.pagination}>
-              <Pagination
-                itemClass="page-item"
-                linkClass="page-link"
-                activePage={activePage}
-                itemsCountPerPage={4}
-                totalItemsCount={bedrooms.length}
-                pageRangeDisplayed={5}
-                onChange={handlePageChange}
-              />
-            </div>
           </Col>
         </Row>
       </Container>
@@ -336,7 +361,7 @@ export default function Home({ bedrooms, kitchens, childrooms, offices }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getStaticProps({ req }) {
   const bedrooms = await axios
     .get(`${process.env.BACKEND_URL}/products?categories=1`)
     .then(({ data }) => data)
@@ -357,8 +382,18 @@ export async function getStaticProps() {
     .then(({ data }) => data)
     .catch((e) => null);
 
+    let userAgent;
+    if (req) {
+      userAgent = req.headers["user-agent"];
+    }
+  const parser = new UAParser();
+  parser.setUA(userAgent);
+  const result = parser.getResult();
+  const deviceType = (result.device && result.device.type) || "desktop";
+
   return {
     props: {
+      deviceType,
       bedrooms,
       kitchens,
       childrooms,
